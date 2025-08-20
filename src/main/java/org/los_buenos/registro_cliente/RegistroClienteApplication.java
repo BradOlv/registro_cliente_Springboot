@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.util.Scanner;
 
 @SpringBootApplication
 public class RegistroClienteApplication implements  CommandLineRunner {
@@ -37,7 +38,7 @@ registroClientesApp();
 		}
 	}
 	private int mostrarMenu(Scanner consola){
-		looger.info("""
+		logger.info("""
 		Aplicacion
 		1. listar
 		2.agregar
@@ -46,7 +47,7 @@ registroClientesApp();
 		5. buscar
 		6. salir
 		""");
-		var opcion = Integer.parseInt(consola.nextline());
+		var opcion = Integer.parseInt(consola.nextLine());
 		return opcion;
 	}
 	private boolean ejecutarOpciones (Scanner consola, int opcion){
