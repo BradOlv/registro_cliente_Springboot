@@ -28,6 +28,8 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
     </properties>
     <dependencies>
         <dependency>
@@ -43,9 +45,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <!-- Se recomienda especificar la versión y usar 'provided' scope -->
-            <version>1.18.30</version> <!-- Asegúrate de usar una versión compatible con tu JDK y Spring Boot -->
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -64,8 +64,6 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <!-- La versión aquí debe coincidir con la de la dependencia -->
-                            <version>1.18.30</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
