@@ -1,15 +1,22 @@
 package org.los_buenos.registro_cliente;
 
+import org.los_buenos.registro_cliente.entity.Cliente;
+import org.los_buenos.registro_cliente.service.IClienteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.List;
 import java.util.Scanner;
 
 @SpringBootApplication
 public class RegistroClienteApplication implements  CommandLineRunner {
 
+	@Autowired
+	private IClienteService clienteService;
 	//profesionalizar nuestro sout con un logger
 	private static final Logger logger =LoggerFactory.getLogger(RegistroClienteApplication.class);
 	String salto = System.lineSeparator();
@@ -41,16 +48,108 @@ registroClientesApp();
 		logger.info("""
 		Aplicacion
 		1. listar
-		2.agregar
-		3. editar
-		4. eliminar
-		5. buscar
+		2.buscar
+		3. Guardar
+		4. editar
+		5. eliminar
 		6. salir
 		""");
 		var opcion = Integer.parseInt(consola.nextLine());
 		return opcion;
 	}
 	private boolean ejecutarOpciones (Scanner consola, int opcion){
+		var salir = false;
+		switch (opcion){
+			case 1 -> {
+				logger.info(salto+"***LISTAR de Clientes***"+salto);
+				List<Cliente> clientes = clienteService.listarClientes();
+				clientes.forEach(cliente -> logger.info(cliente.toString()+salto));
+			}
+			case 2 -> {
+				logger.info("***BUSCAR cliente por su código***"+salto);
+				var codigo = Integer.parseInt(consola.nextLine());
+				Cliente cliente = clienteService.buscarClienteporId(codigo);
+				if (cliente != null){
+					logger.info("Cliente encontrado: "+cliente+salto);
+				} else {
+					logger.info("Cliente no encontrado"+cliente+salto);
+				}
+			}
+			case 3 -> {
+				logger.info(salto+"***AGREGAR Cliente***"+salto);
+				logger.info("Ingrese el nombre del cliente:");
+				var nombre = consola.nextLine();
+				logger.info("Ingrese el apellido del cliente:");
+				var apellido = consola.nextLine();
+				logger.info("Ingrese el telefono del cliente:");
+				var telefono = consola.nextLine();
+				logger.info("Ingrese el correo del cliente:");
+				var correo = consola.nextLine();
+				logger.info("Ingrese el genero del cliente:");
+				var genero = consola.nextLine();
+				logger.info("Ingrese la edad del cliente:");
+				var edad =Integer.parseInt(consola.nextLine() );
+				var cliente = new Cliente();
+				cliente.setNombre(nombre);
+				cliente.setApellido(apellido);
+				cliente.setTelefono(telefono);
+				cliente.setCorreo(correo);
+				cliente.setGenero(genero);
+				cliente.setEdad(edad);
+				clienteService.guardarCliente(cliente);
+				logger.info("Cliente agregado con éxito: "+cliente+salto);
+			}
+			case 4 -> {
+				logger.info("***EDITAR cliente***"+salto);
+				// buscar por código
+				logger.info("Agregue el código del cliente a modificar");
+				var codigo = Integer.parseInt(consola.nextLine());
+				Cliente cliente = clienteService.buscarClienteporId(codigo);
+				//guardar si no es null
+				if (cliente != null){
+					logger.info("Ingrese el nombre del cliente:");
+					var nombre = consola.nextLine();
+					logger.info("Ingrese el apellido del cliente:");
+					var apellido = consola.nextLine();
+					logger.info("Ingrese el telefono del cliente:");
+					var telefono = consola.nextLine();
+					logger.info("Ingrese el correo del cliente:");
+					var correo = consola.nextLine();
+					logger.info("Ingrese el genero del cliente:");
+					var genero = consola.nextLine();
+					logger.info("Ingrese la edad del cliente:");
+					var edad =Integer.parseInt(consola.nextLine() );
+					cliente.setNombre(nombre);
+					cliente.setApellido(apellido);
+					cliente.setTelefono(telefono);
+					cliente.setCorreo(correo);
+					cliente.setGenero(genero);
+					cliente.setEdad(edad);
+					clienteService.guardarCliente(cliente);
+					logger.info("Cliente modificado con éxito: "+cliente+salto);
+				} else {
+					logger.info("Cliente no encontrado" + cliente + salto);
+				}
+			}
+			case 5 -> {
+				logger.info(salto + "***ELIMINAR cliente***");
+				logger.info("Ingrese el codigo del cliente a eliminar");
+				var codigo = Integer.parseInt(consola.nextLine());
+				var cliente = clienteService.buscarClienteporId(codigo);
+				if (cliente != null){
+					clienteService.eliminarCliente(cliente);
+					logger.info("Cliente eliminado, adios"+cliente + salto);
+
+				}else{
+					logger.info("Cliente no encontrado "+cliente + salto);
+				}
+			}
+			case 6 ->{
+				logger.info("Saliendo del programa" + salto + salto);
+				salir = true;
+			}
+			default -> logger.info("Opción inválida");
+		}
 		return false;
 	}
 }
